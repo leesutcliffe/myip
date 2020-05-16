@@ -11,34 +11,39 @@ import (
 
 func main() {
 
+  // command line args - 'output' default value 'text'
   outputPtr := flag.String("output", "text", "text or json output for ipify api")
-  output := *outputPtr
   flag.Parse()
 
-  url := getUrl(output)
+  url := getUrl(outputPtr)
 
-  resp, err := http.Get(url)
+  response, err := http.Get(url)
   if err != nil {
-    log.Fatal("Error getting response. ", err)
-  }
-  defer resp.Body.Close()
-
-  body, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    log.Fatal("Error reading response. ", err)
+    log.Fatalln(err)
   }
 
-  fmt.Printf("%s\n", body)
+  if response != nil {
+
+    body, err := ioutil.ReadAll(response.Body)
+    if err != nil {
+      log.Fatalln(err)
+    }
+
+    fmt.Println(string(body))
+    response.Body.Close()
+  }
 }
 
-func getUrl(output string) string {
+// returns the URL and option query if JSON format is requested
+// takes output pointer as argument
+func getUrl(output *string) string {
   url := "https://api.ipify.org"
   query := "/?format=json"
 
-  if (output == strings.ToLower("json")) {
+  if (*output == strings.ToLower("json")) {
     url += query
-  } else if (output != "text") {
-    log.Fatal("invalid flag ", output)
+  } else if (*output != "text") {
+    log.Fatal("invalid flag: ", *output)
   }
 
   return url
