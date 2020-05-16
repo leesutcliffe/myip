@@ -11,19 +11,11 @@ import (
 
 func main() {
 
-  url := "https://api.ipify.org"
-  query := "/?format=json"
-  output := flag.String("output", "text", "text or json output for ipify api")
-
+  outputPtr := flag.String("output", "text", "text or json output for ipify api")
+  output := *outputPtr
   flag.Parse()
 
-  if (*output == strings.ToLower("json")) {
-    url += query
-  } else if *output {
-
-  } else if (*output != "text") {
-    log.Fatal("invalid flag ", *output)
-  }
+  url := getUrl(output)
 
   resp, err := http.Get(url)
   if err != nil {
@@ -37,4 +29,17 @@ func main() {
   }
 
   fmt.Printf("%s\n", body)
+}
+
+func getUrl(output string) string {
+  url := "https://api.ipify.org"
+  query := "/?format=json"
+
+  if (output == strings.ToLower("json")) {
+    url += query
+  } else if (output != "text") {
+    log.Fatal("invalid flag ", output)
+  }
+
+  return url
 }
