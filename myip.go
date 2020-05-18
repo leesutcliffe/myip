@@ -12,10 +12,10 @@ import (
 
 func main() {
 
-  var ver float64 = 0.1
+  var ver = "0.1"
 
   // command line args - 'output' default value 'text'
-  outputPtr := flag.String("output", "text", "text or json output for ipify api")
+  outputPtr := flag.String("output", "text", "text or json output {text|json}")
   verPtr := flag.Bool("version", false, "output version number")
   flag.Parse()
 
@@ -41,7 +41,7 @@ func main() {
 }
 
 // Prints version if flag set to true and exits
-func showVer(ver float64, verFlag *bool){
+func showVer(ver string, verFlag *bool){
   if *verFlag {
     fmt.Printf("myip, version:%v\n", ver)
     os.Exit(1)
@@ -57,7 +57,9 @@ func getUrl(output *string) string {
   if (*output == strings.ToLower("json")) {
     url += query
   } else if (*output != "text") {
-    log.Fatal("invalid flag: ", *output)
+    flag.PrintDefaults()
+    os.Exit(1)
+    //log.Fatal("invalid flag: ", *output)
   }
 
   return url
