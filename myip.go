@@ -13,53 +13,73 @@ import (
 func main() {
 
   var ver = "0.1"
+  const (
+    outUsage = "text or json output {text|json}"
+    outDefault = "text"
+    verUsage = "version number"
+    verDefault = false
+  )
 
-  // command line args - 'output' default value 'text'
-  outputPtr := flag.String("output", "text", "text or json output {text|json}")
-  verPtr := flag.Bool("version", false, "output version number")
+  // cmd line flags
+  var verFlag bool
+  var outFlag string
+
+  flag.StringVar(&outFlag, "output", outDefault, outUsage)
+  flag.StringVar(&outFlag, "o", outDefault, outUsage)
+  flag.BoolVar(&verFlag, "version", verDefault, verUsage)
+  flag.BoolVar(&verFlag, "v", verDefault, verUsage)
   flag.Parse()
 
-  showVer(ver, verPtr)
+  // output version and exit if flag selected
+  if verFlag {
+    showVer(ver)
+  }
 
-  url := getUrl(outputPtr)
+  url := generateUrl(outFlag)
+  fmt.Println(getRequest(url))
 
+}
+
+// gets HTTP request to ipify api
+// returns http body
+func getRequest(url string) string {
+  var fmtBody string
   response, err := http.Get(url)
+
   if err != nil {
     log.Fatalln(err)
   }
 
   if response != nil {
-
     body, err := ioutil.ReadAll(response.Body)
     if err != nil {
       log.Fatalln(err)
     }
 
-    fmt.Println(string(body))
+    fmtBody = (string(body))
     response.Body.Close()
   }
+
+  return fmtBody
 }
 
-// Prints version if flag set to true and exits
-func showVer(ver string, verFlag *bool){
-  if *verFlag {
+// Prints version and exits
+func showVer(ver string){
     fmt.Printf("myip, version:%v\n", ver)
     os.Exit(1)
-  }
 }
 
 // returns the URL and option query if JSON format is requested
 // takes output pointer as argument
-func getUrl(output *string) string {
+func generateUrl(output string) string {
   url := "https://api.ipify.org"
   query := "/?format=json"
 
-  if (*output == strings.ToLower("json")) {
+  if (output == strings.ToLower("json")) {
     url += query
-  } else if (*output != "text") {
+  } else if (output != "text") {
     flag.PrintDefaults()
     os.Exit(1)
-    //log.Fatal("invalid flag: ", *output)
   }
 
   return url
