@@ -8,6 +8,7 @@ import (
   "flag"
   "strings"
   "os"
+  ver "github.com/leesutcliffe/myip/version"
 )
 
 func main() {
