@@ -8,7 +8,6 @@ import (
   "flag"
   "strings"
   "os"
-  ver "github.com/leesutcliffe/myip/version"
 )
 
 func main() {
@@ -33,17 +32,24 @@ func main() {
 
   // output version and exit if flag selected
   if verFlag {
-    showVer(ver)
+		fmt.Printf("myip, version:%v\n", ver)
+    os.Exit(1)
   }
 
-  url := generateUrl(outFlag)
-  fmt.Println(getRequest(url))
+	// generate url, print flag defaults if incorrect flag
+	url := genUrl(outFlag)
+	if url == "" {
+		flag.PrintDefaults()
+    os.Exit(1)
+	}
+
+  fmt.Println(getReq(url))
 
 }
 
 // gets HTTP request to ipify api
 // returns http body
-func getRequest(url string) string {
+func getReq(url string) string {
   var fmtBody string
   response, err := http.Get(url)
 
@@ -64,23 +70,16 @@ func getRequest(url string) string {
   return fmtBody
 }
 
-// Prints version and exits
-func showVer(ver string){
-    fmt.Printf("myip, version:%v\n", ver)
-    os.Exit(1)
-}
-
 // returns the URL and option query if JSON format is requested
 // takes output pointer as argument
-func generateUrl(output string) string {
+func genUrl(output string) string {
   url := "https://api.ipify.org"
   query := "/?format=json"
 
   if (output == strings.ToLower("json")) {
     url += query
   } else if (output != "text") {
-    flag.PrintDefaults()
-    os.Exit(1)
+    return ""
   }
 
   return url
