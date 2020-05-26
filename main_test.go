@@ -25,3 +25,11 @@ func TestUrlErr(t *testing.T) {
 		t.Errorf("genUrl() = %q, want %q", got, want)
 	}
 }
+
+func TestVersion(t *testing.T) {
+	want := "myip, version: 0.1"
+	got := version("0.1")
+	if got != want {
+		t.Errorf("version() = %q, want %q", got, want)
+	}
+}

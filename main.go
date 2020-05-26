@@ -10,31 +10,6 @@ import (
 	"strings"
 )
 
-// initialise vars
-var (
-	ver        string
-	outUsage   string
-	outDefault string
-	outFlag    string
-	verUsage   string
-	verDefault bool
-	verFlag    bool
-)
-
-// define global vars in init function
-func init() {
-	ver = "0.1"
-	outUsage = "text or json output {text|json}"
-	outDefault = "text"
-	verUsage = "version number"
-	verDefault = false
-
-	flag.StringVar(&outFlag, "output", outDefault, outUsage)
-	flag.StringVar(&outFlag, "o", outDefault, outUsage)
-	flag.BoolVar(&verFlag, "version", verDefault, verUsage)
-	flag.BoolVar(&verFlag, "v", verDefault, verUsage)
-}
-
 func main() {
 	err := StartApp()
 	if err != nil {
@@ -45,6 +20,7 @@ func main() {
 
 func StartApp() error {
 
+	// outFlag & varFlag defined in init.go
 	flag.Parse()
 	if outFlag == "" {
 		return fmt.Errorf("unable to parse flags")
@@ -52,7 +28,8 @@ func StartApp() error {
 
 	// output version and exit if flag selected
 	if verFlag {
-		version(ver)
+		fmt.Println(version(ver))
+		os.Exit(1)
 	}
 
 	// generate url, print flag defaults if incorrect flag
@@ -69,9 +46,8 @@ func StartApp() error {
 }
 
 // show version and exit
-func version(ver string) {
-	fmt.Printf("myip, version:%v\n", ver)
-	os.Exit(1)
+func version(ver string) string {
+	return "myip, version: "+ver
 }
 
 // gets HTTP request to ipify api
