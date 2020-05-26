@@ -12,25 +12,27 @@ import (
 
 // initialise vars
 var (
-	ver string
-	outUsage string
+	ver        string
+	outUsage   string
 	outDefault string
-	verUsage string
+	outFlag    string
+	verUsage   string
 	verDefault bool
+	verFlag    bool
 )
 
-type Flags struct {
-	out string
-	ver bool
-}
-
-// set global vars in init function
+// define global vars in init function
 func init() {
 	ver = "0.1"
-	outUsage   = "text or json output {text|json}"
+	outUsage = "text or json output {text|json}"
 	outDefault = "text"
-	verUsage   = "version number"
+	verUsage = "version number"
 	verDefault = false
+
+	flag.StringVar(&outFlag, "output", outDefault, outUsage)
+	flag.StringVar(&outFlag, "o", outDefault, outUsage)
+	flag.BoolVar(&verFlag, "version", verDefault, verUsage)
+	flag.BoolVar(&verFlag, "v", verDefault, verUsage)
 }
 
 func main() {
@@ -41,27 +43,9 @@ func main() {
 	}
 }
 
-func SetFlags() (string, bool) {
-
-		// cmd line flags
-		f := new(Flags)
-		flag.StringVar(&f.out, "output", outDefault, outUsage)
-		flag.StringVar(&f.out, "o", outDefault, outUsage)
-		flag.BoolVar(&f.ver, "version", verDefault, verUsage)
-		flag.BoolVar(&f.ver, "v", verDefault, verUsage)
-		flag.Parse()
-
-		isParsed := flag.Parsed()
-		if isParsed != true {
-			return "", false
-		}
-
-		return f.out, f.ver
-}
-
 func StartApp() error {
 
-	outFlag, verFlag := SetFlags()
+	flag.Parse()
 	if outFlag == "" {
 		return fmt.Errorf("unable to parse flags")
 	}
@@ -86,8 +70,8 @@ func StartApp() error {
 
 // show version and exit
 func version(ver string) {
-		fmt.Printf("myip, version:%v\n", ver)
-		//os.Exit(1)
+	fmt.Printf("myip, version:%v\n", ver)
+	os.Exit(1)
 }
 
 // gets HTTP request to ipify api
