@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
+	"myip/util"
 )
 
 func main() {
@@ -28,12 +28,12 @@ func StartApp() error {
 
 	// output version and exit if flag selected
 	if verFlag {
-		fmt.Println(version(ver))
+		fmt.Println(util.Version(ver))
 		os.Exit(1)
 	}
 
 	// generate url, print flag defaults if incorrect flag
-	url := genUrl(outFlag)
+	url := util.GenUrl(outFlag)
 	if url == "" {
 		flag.PrintDefaults()
 		os.Exit(1)
@@ -45,10 +45,7 @@ func StartApp() error {
 
 }
 
-// show version and exit
-func version(ver string) string {
-	return "myip, version: "+ver
-}
+
 
 // gets HTTP request to ipify api
 // returns http body
@@ -71,19 +68,4 @@ func getReq(url string) string {
 	}
 
 	return fmtBody
-}
-
-// returns the URL and option query if JSON format is requested
-// takes output pointer as argument
-func genUrl(output string) string {
-	url := "https://api.ipify.org"
-	query := "/?format=json"
-
-	if output == strings.ToLower("json") {
-		url += query
-	} else if output != "text" {
-		return ""
-	}
-
-	return url
 }
