@@ -1,71 +1,67 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
+	// "io/ioutil"
+	// "log"
+	// "net/http"
 	"os"
-	"myip/util"
+	"strings"
+	"myip/handler"
 )
 
-func main() {
-	err := StartApp()
-	if err != nil {
-		log.Println(err.Error())
-		os.Exit(1)
-	}
+type Config struct {
+	version bool
+	output  string
 }
 
-func StartApp() error {
+// myip version
+var ver = "0.1"
 
-	// outFlag & varFlag defined in init.go
+func startApp(conf *Config) error {
+
+	if conf.version {
+		fmt.Printf("myip, version: %v\n", ver)
+		return nil
+	}
+
+	if url := genUrl(conf.output); url != "" {
+		fmt.Println(handler.Get(url))
+		return nil
+	}
+
+	return errors.New("invalid flag")
+
+}
+
+func main() {
+
+	var conf Config
+	flag.StringVar(&conf.output, "output", outDefault, outUsage)
+	flag.StringVar(&conf.output, "o", outDefault, outUsage)
+	flag.BoolVar(&conf.version, "version", verDefault, verUsage)
+	flag.BoolVar(&conf.version, "v", verDefault, verUsage)
+
 	flag.Parse()
-	if outFlag == "" {
-		return fmt.Errorf("unable to parse flags")
-	}
 
-	// output version and exit if flag selected
-	if verFlag {
-		fmt.Println(util.Version(ver))
-		os.Exit(1)
-	}
-
-	// generate url, print flag defaults if incorrect flag
-	url := util.GenUrl(outFlag)
-	if url == "" {
+	err := startApp(&conf)
+	if err != nil {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-
-	fmt.Println(getReq(url))
-
-	return nil
-
 }
 
+func genUrl(output string) string {
+	url := "https://api.ipify.org"
+	query := "/?format=json"
 
-
-// gets HTTP request to ipify api
-// returns http body
-func getReq(url string) string {
-	var fmtBody string
-	response, err := http.Get(url)
-
-	if err != nil {
-		log.Fatalln(err)
+	if output == strings.ToLower("json") {
+		url += query
+	} else if output != "text" {
+		return ""
 	}
 
-	if response != nil {
-		body, err := ioutil.ReadAll(response.Body)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		fmtBody = (string(body))
-		response.Body.Close()
-	}
-
-	return fmtBody
+	return url
 }
