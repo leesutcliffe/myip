@@ -1,11 +1,15 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	hnd "myip/handler"
-	"errors"
 )
 
+/* Function startApp
+Starts main application logic - returns nil or error
+@Params config - (Config - struct)
+@Params get (function) */
 func startApp(conf *Config, get func(string) string) error {
 	if conf.version {
 		fmt.Printf("myip, version: %v\n", ver)

@@ -6,22 +6,22 @@ import (
 	"os"
 )
 
+// struct for command line options
 type Config struct {
 	version bool
 	output  string
 }
 
-// initialise vars
+// initialise global vars
 var (
 	outUsage   string
 	outDefault string
 	verUsage   string
 	verDefault bool
 	ver        string
-	//conf       Config
 )
 
-// define global vars in init function
+// global vars
 func init() {
 	outUsage = "text or json output {text|json}"
 	outDefault = "text"
@@ -29,7 +29,7 @@ func init() {
 	verDefault = false
 
 	// myip version
-	ver = "0.1"
+	ver = "1.0"
 }
 
 func main() {
@@ -39,7 +39,6 @@ func main() {
 	flag.StringVar(&conf.output, "o", outDefault, outUsage)
 	flag.BoolVar(&conf.version, "version", verDefault, verUsage)
 	flag.BoolVar(&conf.version, "v", verDefault, verUsage)
-
 	flag.Parse()
 
 	err := startApp(&conf, hnd.Get)
@@ -48,4 +47,3 @@ func main() {
 		os.Exit(1)
 	}
 }
-

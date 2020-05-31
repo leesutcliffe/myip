@@ -12,10 +12,10 @@ func TestGetRequest(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	want := "OK"
-	got := Get(ts.URL)
-	if got != want {
-		t.Errorf("getReq() = %q, want %q", got, want)
+	expected := "OK"
+	actual := Get(ts.URL)
+	if actual != expected {
+		t.Errorf("Get() = %q, expected %q", actual, expected)
 	}
 }
 
@@ -42,5 +42,3 @@ func TestUrlErr(t *testing.T) {
 		t.Errorf("Path() = %q, expected %q", actual, expected)
 	}
 }
-
-

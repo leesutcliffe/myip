@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-// Function - Get
-// @Param: url - full URL to ipify API
-// returns the HTTP body
+/* Function Get
+returns the HTTP response body
+@Param: url - full URL to ipify API */
 func Get(url string) string {
 	var fmtBody string
 	response, err := http.Get(url)
@@ -31,9 +31,9 @@ func Get(url string) string {
 	return fmtBody
 }
 
-// Function - Path
-// @Param: output - text or json output as per ipify API
-// returns the ipify api endpoint depending on output preference
+/* Function Path
+Consumes the ipify api endpoint depending on output preference
+@Param: output - text or json output as per ipify API */
 func Path(output string) string {
 	url := "https://api.ipify.org"
 	query := "/?format=json"
