@@ -20,7 +20,7 @@ type Config struct {
 // myip version
 var ver = "0.1"
 
-func startApp(conf *Config) error {
+func startApp(conf *Config, get func(string) string ) error {
 
 	if conf.version {
 		fmt.Printf("myip, version: %v\n", ver)
@@ -28,7 +28,7 @@ func startApp(conf *Config) error {
 	}
 
 	if url := genUrl(conf.output); url != "" {
-		fmt.Println(handler.Get(url))
+		fmt.Println(get(url))
 		return nil
 	}
 
@@ -46,7 +46,7 @@ func main() {
 
 	flag.Parse()
 
-	err := startApp(&conf)
+	err := startApp(&conf, handler.Get)
 	if err != nil {
 		flag.PrintDefaults()
 		os.Exit(1)

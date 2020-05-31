@@ -4,6 +4,7 @@ import (
 	// "net/http"
 	// "net/http/httptest"
 	"testing"
+	"errors"
 )
 
 // func TestGetRequest(t *testing.T) {
@@ -24,16 +25,48 @@ func TestStartAppVersion(t *testing.T) {
 		testVerConf.output = "text"
 		testVerConf.version = true
 
+		getMock := func(u string) string {
+			return u
+		}
+
 		var want error = nil
-		got := startApp(&testVerConf)
+		got := startApp(&testVerConf, getMock)
 		if got != want {
 			t.Errorf("genUrl() = %q, want %q", got, want)
 		}
 }
 
-//TODO: handler.Get(url) - dependency on hander package
-// look to pass function by reference and mock using dummy
-// func in test
+func TestStartApp(t *testing.T) {
+	var testVerConf Config
+	testVerConf.output = "text"
+	testVerConf.version = false
+
+	getMock := func(u string) string {
+		return u
+	}
+
+	var want error = nil
+	got := startApp(&testVerConf, getMock)
+	if got != want {
+		t.Errorf("genUrl() = %q, want %q", got, want)
+	}
+}
+
+// func TestStartAppError(t *testing.T) {
+// 	var testVerConf Config
+// 	testVerConf.output = "invalid"
+// 	testVerConf.version = false
+
+// 	getMock := func(u string) string {
+// 		return u
+// 	}
+
+// 	var want error = errors.New("invalid flag")
+// 	got := startApp(&testVerConf, getMock)
+// 	if got != want {
+// 		t.Errorf("genUrl() = %q, want %q", got, want)
+// 	}
+// }
 
 func TestDefaultUrl(t *testing.T) {
 	want := "https://api.ipify.org"
