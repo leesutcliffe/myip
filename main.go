@@ -1,15 +1,9 @@
 package main
 
 import (
-	"errors"
 	"flag"
-	"fmt"
-	// "io/ioutil"
-	// "log"
-	// "net/http"
+	hnd "myip/handler"
 	"os"
-	"strings"
-	"myip/handler"
 )
 
 type Config struct {
@@ -17,23 +11,25 @@ type Config struct {
 	output  string
 }
 
-// myip version
-var ver = "0.1"
+// initialise vars
+var (
+	outUsage   string
+	outDefault string
+	verUsage   string
+	verDefault bool
+	ver        string
+	//conf       Config
+)
 
-func startApp(conf *Config, get func(string) string ) error {
+// define global vars in init function
+func init() {
+	outUsage = "text or json output {text|json}"
+	outDefault = "text"
+	verUsage = "version number"
+	verDefault = false
 
-	if conf.version {
-		fmt.Printf("myip, version: %v\n", ver)
-		return nil
-	}
-
-	if url := genUrl(conf.output); url != "" {
-		fmt.Println(get(url))
-		return nil
-	}
-
-	return errors.New("invalid flag")
-
+	// myip version
+	ver = "0.1"
 }
 
 func main() {
@@ -46,22 +42,10 @@ func main() {
 
 	flag.Parse()
 
-	err := startApp(&conf, handler.Get)
+	err := startApp(&conf, hnd.Get)
 	if err != nil {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
 }
 
-func genUrl(output string) string {
-	url := "https://api.ipify.org"
-	query := "/?format=json"
-
-	if output == strings.ToLower("json") {
-		url += query
-	} else if output != "text" {
-		return ""
-	}
-
-	return url
-}

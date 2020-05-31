@@ -1,5 +1,2 @@
-**/*
-!**/*.go
-!**/*.md
-!**/version
-!**/util/
+*.out
+myip

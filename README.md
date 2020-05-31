@@ -16,6 +16,12 @@ go build myip.go
 
 Run the tool from current folder or copy to location in your path, such as /usr/local/bin/
 
+Alternatively, use go install (requires $GOBIN environment variable)
+
+```
+go install myip
+```
+
 ### Usage
 ```
 $ myip
