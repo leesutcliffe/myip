@@ -28,7 +28,7 @@ $ myip
 20.30.40.50
 
 $ myip -output=json
-{"ip":"20.30.40.50"}
+{"ip":"82.23.60.241"}
 
 $ myip -version
 myip, version:0.1
