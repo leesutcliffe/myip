@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	hnd "myip/handler"
+	hnd "github.com/leesutcliffe/myip/handler"
 )
 
 /* Function startApp
