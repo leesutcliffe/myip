@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	hnd "github.com/leesutcliffe/myip/handler"
+	hnd "myip/handler"
 	"os"
 )
 
